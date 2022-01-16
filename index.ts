@@ -68,9 +68,20 @@ function subscriberCount<T>(
   });
 }
 
-let op$ = subscriberCount(o$, 'Experiment');
+function subscriberCountOperator<T>() {
+  return function <T>(source: Observable<T>): Observable<T> {
+    return subscriberCount<T>(source, 'Description from operator');
+  };
+}
+
+//let op$ = subscriberCount(o$, 'Experiment');
 //let op$ = o$.pipe();
 //let op$ = throwError(new Error('From start'));
-op$.subscribe((x) => {
+let op$ = o$.pipe(subscriberCountOperator());
+let sub = op$.subscribe((x) => {
   console.log('operator = ', x);
+
+  if (x > 2) {
+    sub.unsubscribe();
+  }
 });
