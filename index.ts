@@ -1,6 +1,15 @@
 // Import stylesheets
 import './style.css';
-import { Observable, of, interval, timer, Subscriber } from 'rxjs';
+import {
+  Observable,
+  of,
+  interval,
+  timer,
+  Subscriber,
+  throwError,
+  concatWith,
+} from 'rxjs';
+import { take } from 'rxjs/operators';
 
 // Write TypeScript code!
 const appDiv: HTMLElement = document.getElementById('app');
@@ -8,10 +17,14 @@ appDiv.innerHTML = `<h1>TypeScript Starter</h1>`;
 
 console.log('app start');
 
-let o$ = timer(1000, 1000); //of(1, 2, 3);
-o$.subscribe((x) => {
-  console.log('source = ', x);
-});
+let o$ = timer(1000, 1000).pipe(
+  take(5),
+  concatWith(throwError(() => new Error('Oupsie')))
+); //of(1, 2, 3);
+
+// o$.subscribe((x) => {
+//   console.log('source = ', x);
+// });
 
 function myOperator<T>(source: Observable<T>) {
   return source;
@@ -56,6 +69,8 @@ function subscriberCount<T>(
 }
 
 let op$ = subscriberCount(o$, 'Experiment');
+//let op$ = o$.pipe();
+//let op$ = throwError(new Error('From start'));
 op$.subscribe((x) => {
   console.log('operator = ', x);
 });
