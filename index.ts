@@ -40,7 +40,7 @@ function filterNil() {
 function subscriberCount<T>(
   sourceObservable: Observable<T>,
   description: string
-) {
+): Observable<T> {
   let counter = 0;
   return new Observable((subscriber: Subscriber<T>) => {
     const subscription = sourceObservable.subscribe(subscriber);
@@ -55,7 +55,7 @@ function subscriberCount<T>(
   });
 }
 
-let op$ = myOperator(o$);
+let op$ = subscriberCount(o$, 'Experiment');
 op$.subscribe((x) => {
   console.log('operator = ', x);
 });
